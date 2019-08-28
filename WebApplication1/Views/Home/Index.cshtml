@@ -1,0 +1,100 @@
+﻿@model IEnumerable<WebApplication1.Models.User>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@*<input id="btn" type="button" value="Get All" />*@
+@*<ul id="ulEmployees"></ul>*@
+@*<script src="~/Scripts/jquery-3.4.1.min.js"></script>*@
+<script src="~/Scripts/kendojs/jquery.min.js"></script>
+<script src="~/Scripts/kendojs/kendo.web.min.js"></script>
+<link href="~/Content/kendo/kendostyles/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendostyles/kendo.default.min.css" rel="stylesheet" />
+@*<script type="text/javascript">
+            $(document).ready(function () {
+                var ulEmplyees = $('#ulEmployees');
+                $('#btn').click(function () {
+                    $.ajax({
+                        type: 'GET',
+                        url: "http://localhost:52520/api/User",
+                        dataType: 'json',
+                        success: function (data) {
+                            ulEmplyees.empty();
+                            $.each(data, function (index, val) {
+                                var username = val.Username;
+                                ulEmplyees.append('<li>' + username + '</li>')
+                            });
+                        }
+                    })
+                });
+            });
+    </script>*@
+<div id="grid"></div>
+<script>
+    var remoteDataSource = new kendo.data.DataSource({
+        transport: {
+            read: {
+                url: "http://localhost:52520/api/User",
+                dataType: "json",
+                type: "GET"
+            },
+            create: {
+                url: "http://localhost:52520/api/admin/insert",
+                dataType: "json",
+                type: "POST"
+            },
+            update: {
+                url: "http://localhost:52520/api/Admin", 
+                datatype: "json",
+                type: "PUT"
+            }
+        },
+        pageSize: 5,
+        schema: {
+            model: {
+                id: "UserId",
+                fields: {
+                    UserId: { editable: false, type: "number"},
+                    Username: {
+                        validation: { required: true }
+                    },
+                    PhoneNumber: {
+                        validation: { required: true, }
+                    },
+                    Email: {
+                        validation: { required: true }
+                    }
+                }
+            }
+        }
+    });
+    $('#grid').kendoGrid({
+        dataSource: remoteDataSource,
+        height: 300,
+        toolbar: [{ name: "create", text: "Add Employee" }],
+        editable: "popup",
+        pageable: true,
+        columns: [
+            {
+                field: "UserId",
+                title: "UserId"
+            },
+            {
+                field: "Username",
+                title: "Username"
+            },
+            {
+                field: "PhoneNumber",
+                title: "PhoneNumber"
+            },
+            {
+                field: "Email",
+                title: "Email"
+            },
+            {
+                command: ["edit"]
+            }
+        ]
+    });
+</script>
